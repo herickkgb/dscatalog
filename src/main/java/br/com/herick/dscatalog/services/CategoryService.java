@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.herick.dscatalog.entities.Category;
 import br.com.herick.dscatalog.fto.CategoryDTO;
 import br.com.herick.dscatalog.repositories.CategoryRepository;
+import br.com.herick.dscatalog.repositories.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -27,7 +28,7 @@ public class CategoryService {
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = categoryRepository.findById(id);
-		Category entity = obj.get();
+		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Recurso com id " + id + " não encontrado"));
 		return new CategoryDTO(entity);
 	}
 }
