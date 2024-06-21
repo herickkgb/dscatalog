@@ -28,7 +28,16 @@ public class CategoryService {
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = categoryRepository.findById(id);
-		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Recurso com id " + id + " não encontrado"));
+		Category entity = obj
+				.orElseThrow(() -> new EntityNotFoundException("Recurso com id " + id + " não encontrado"));
+		return new CategoryDTO(entity);
+	}
+
+	@Transactional
+	public CategoryDTO insert(CategoryDTO dto) {
+		Category entity = new Category();
+		entity.setName(dto.getName());
+		entity = categoryRepository.save(entity);
 		return new CategoryDTO(entity);
 	}
 }
