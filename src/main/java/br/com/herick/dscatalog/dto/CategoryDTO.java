@@ -1,4 +1,4 @@
-package br.com.herick.dscatalog.fto;
+package br.com.herick.dscatalog.dto;
 
 import java.io.Serializable;
 
