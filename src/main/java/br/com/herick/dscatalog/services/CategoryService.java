@@ -5,12 +5,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.herick.dscatalog.dto.CategoryDTO;
 import br.com.herick.dscatalog.entities.Category;
 import br.com.herick.dscatalog.repositories.CategoryRepository;
+import br.com.herick.dscatalog.services.exceptions.DataBaseException;
 import br.com.herick.dscatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -53,5 +56,17 @@ public class CategoryService {
 			throw new ResourceNotFoundException("Recurso com id " + id + " não encontrado");
 		}
 
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public void deleteById(Long id) {
+		if (!categoryRepository.existsById(id)) {
+			throw new ResourceNotFoundException("Recurso com id " + id + " não encontrado");
+		}
+		try {
+			categoryRepository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataBaseException("Falha de integridade referencial");
+		}
 	}
 }
